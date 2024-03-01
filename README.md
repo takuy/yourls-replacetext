@@ -25,9 +25,9 @@ Base YOURLS example: `https://sho.rt`
 
 | Short URL | Long URL  | Navigation URL <br> <sub>what you would navigate to in your browser</sub>  | Final Redirect    |
 | ---       | ---           | ---               | ---               |
-| `regex/(REQ[0-9]*)`| `https://myticketsystem.com/?ticket=%22[[1]]%22` | `https://sho.rt/REQ0000010` | `https://myticketsystem.com/?ticket=REQ0000010` |
+| `regex/(REQ[0-9]*)`| `https://myticketsystem.com/?ticket=%22[[1]]%22` | `https://sho.rt/REQ0000010` | `https://myticketsystem.com/?ticket="REQ0000010"` |
 | `regex/(.*)_(.*)` | `https://www.google.com/search?q=[[1]]&tbm=[[2]]` | `https://sho.rt/sample_isch` | `https://www.google.com/search?q=sample&tbm=isch` |
-| `req` | `https://myticketsystem.com/?ticket=%22[[req]]%22` | `https://sho.rt/req/REQ0000010` | `https://myticketsystem.com/?ticket=REQ0000010` | 
+| `req` | `https://myticketsystem.com/?ticket=%22[[req]]%22` | `https://sho.rt/req/REQ0000010` | `https://myticketsystem.com/?ticket="REQ0000010"` | 
 | `$sample/google_(.*)` | `anything` <br> <sub>passed to the script for use</sub> | `https://sho.rt/google_hello%20world` | `https://www.google.com/search?q=hello%20world` | 
 
 
