@@ -116,9 +116,7 @@ function takuy_replacetext_replace_path($keyword) {
 					}
 					require_once($scriptPath);
 					
-					
-
-					$newURL = yourls_apply_filter("takuy_scriptreplace_$scriptName", $keyword[0], $res["url"], $matches);
+					$newURL = yourls_apply_filter("takuy_scriptreplace_$scriptName", $keyword[0], $res["keyword"], $res["url"], $matches);
 					
 				
 				/* otherwise replace the URL's numbered tokens based on regex match*/
@@ -134,7 +132,7 @@ function takuy_replacetext_replace_path($keyword) {
 						}
 					}
 				}
-				echo "redirecting $key to $newURL";
+				echo "redirecting $$keyword[0] to $newURL";
 				
 				/* For tracking purposes, we use the matched regex keyword */
 				yourls_redirect_shorturl($newURL, $res["keyword"]);
