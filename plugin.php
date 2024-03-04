@@ -3,7 +3,7 @@
 Plugin Name: replacetext
 Plugin URI: http://yourls.org/
 Description: replace URL or tokens based on regex pattern matching or script
-Version: 1.0
+Version: 1.1
 Author: takuy
 Author URI: https://github.com/takuy
 */
