@@ -150,20 +150,9 @@ function takuy_replacetext_pre_pre_add_new_link($return, $url, $keyword, $title)
 		yourls_add_filter( 'sanitize_string', function($sanitized, $original) { 
 			return $original;
 		} );
-/*
-		$regexString = str_split(substr($keyword, 6));
-		yourls_add_filter( 'get_shorturl_charset', function($in) use ($regexString) { 
-	        	$added = "";
-			foreach ($regexString as $c) {
-                        	if(strpos($in, $c)) continue;
-	
-        	                $added = $added.$c;
-                	}
-			
-			return $in.$added;
-		} );		
-*/
+
 		return false;
 	} 
+	return false;
 }
 
