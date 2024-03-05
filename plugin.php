@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: takuy replace text
-Plugin URI: http://yourls.org/
+Plugin Name: replacetext
+Plugin URI: https://github.com/takuy/yourls-replacetext
 Description: replace URL or tokens based on regex pattern matching or script
 Version: 1.3.0
 Author: takuy
