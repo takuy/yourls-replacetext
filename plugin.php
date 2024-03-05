@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: replacetext
-Plugin URI: http://yourls.org/
+Plugin URI: https://github.com/tomslominski/yourls-redirect-index
 Description: replace URL or tokens based on regex pattern matching or script
 Version: 1.2
 Author: takuy
