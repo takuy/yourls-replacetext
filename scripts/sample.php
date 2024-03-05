@@ -1,7 +1,7 @@
 <?php
 
 class sample {
-    static function google_that($requestedKeyword, $matchedKeyword, $url, $matches) {
+    static function google_that($requestedKeyword, $matchedKeyword, $matchedUrl, $matches) {
         return "https://www.google.com/search?q=" . $matches[1];
     }
 }
