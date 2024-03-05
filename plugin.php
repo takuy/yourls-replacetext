@@ -3,7 +3,7 @@
 Plugin Name: replacetext
 Plugin URI: http://yourls.org/
 Description: replace URL or tokens based on regex pattern matching or script
-Version: 1.1
+Version: 1.2
 Author: takuy
 Author URI: https://github.com/takuy
 */
@@ -14,7 +14,7 @@ if( !defined( 'YOURLS_ABSPATH' ) ) die();
 yourls_add_filter( 'get_shorturl_charset', 'takuy_replacetext_to_charset' );
 yourls_add_filter( 'redirect_location', 'takuy_replacetext_replace_params', 1 );
 yourls_add_action( 'redirect_keyword_not_found', 'takuy_replacetext_replace_path', 1);
-yourls_add_filter( 'shunt_add_new_link', 'takuy_replacetext_pre_pre_add_new_link', 1);
+yourls_add_action( 'pre_add_new_link', 'takuy_replacetext_pre_pre_add_new_link', 1);
 
 function takuy_replacetext_to_charset( $in ) {
 	$added = "";
@@ -143,7 +143,8 @@ function takuy_replacetext_replace_path($keyword) {
 	
 }
 
-function takuy_replacetext_pre_pre_add_new_link($return, $url, $keyword, $title) {
+function takuy_replacetext_pre_pre_add_new_link($args) {
+	$keyword = $args[1];
 	if(strpos($keyword, "regex/") === 0 || strpos($keyword, "\$") === 0) {
 		
 
