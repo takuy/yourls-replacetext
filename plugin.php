@@ -17,6 +17,10 @@ yourls_add_action('redirect_keyword_not_found', 'takuy_replacetext_replace_path'
 yourls_add_action('pre_add_new_link', 'takuy_replacetext_pre_pre_add_new_link', 1);
 yourls_add_filter('shunt_edit_link', 'takuy_replacetext_pre_pre_edit_link');
 yourls_add_filter('is_shorturl', 'takuy_replacetext_is_shorturl', 1);
+yourls_add_action('admin_page_before_table', 'takuy_replacetext_admin_page_before_table');
+yourls_add_filter('shunt_get_keyword_info', 'takuy_replacetext_get_keywordinfo');
+yourls_add_action('plugins_loaded', 'takuy_replacetext_ajax_plugins_loaded');
+yourls_add_filter('keyword_is_taken', 'takuy_replacetext_stats_keyword_taken');
 
 function takuy_replacetext_to_charset($in) {
     $added = "";
@@ -59,7 +63,8 @@ function takuy_replacetext_replace_params($url) {
 }
 
 function takuy_replacetext_is_shorturl($isshort, $shorturl) {
-    return is_array(takuy_replacetext_complex_text($shorturl));
+    $data = takuy_replacetext_complex_text($shorturl);
+    return is_array($data);
 }
 
 function takuy_replacetext_simple_text($keyword) {
@@ -111,7 +116,7 @@ function takuy_replacetext_complex_text($keyword) {
 }
 
 function takuy_replacetext_complex_script($script_name, $original_keyword, $match_keyword, $match_url, $matches) {
-    /*sanitize it*/
+    /* sanitize script name */
     $scriptName = preg_replace('/[^a-zA-Z0-9_]/', '', $script_name);
     $scriptPath = dirname(__FILE__) . "/scripts/$scriptName.php";
 
@@ -131,6 +136,9 @@ function takuy_replacetext_complex_regex($match_url, $matches) {
                [[1]] will be replaced with the first matched group, [[2]] with the second, etc */
         if (strpos($newURL, "[[$i]]")) {
             $newURL = str_replace("[[$i]]", $matches[$i], $newURL);
+        }
+        if (strpos($newURL, "[[!$i]]")) {
+            $newURL = str_replace("[[!$i]]", strtoupper($matches[$i]), $newURL);
         }
     }
     return $newURL;
@@ -180,10 +188,72 @@ function takuy_replacetext_pre_pre_edit_link($return, $keyword, $url, $k, $newke
     return $return;
 }
 
-function takuy_replacetext_override_sanitize($keyword) {
-    if (strpos($keyword, "regex/") === 0 || strpos($keyword, "\$") === 0) {
+/* avoid creating links to takuy_replacetext keywords - pointless for the table. they're not usually valid links. */
+function takuy_replacetext_admin_page_before_table($args) {
+    takuy_replacetext_override_sanitize("", true);
+    yourls_add_filter('table_add_row_cell_array', function ($cells, $keyword, $url, $title, $ip, $clicks, $timestamp) {
+        if (takuy_replacetext_is_replaceable($keyword)) {
+            $cells["keyword"]["template"] = "%keyword_html%";
+        }
+        return $cells;
+    });
+
+    yourls_add_filter('table_add_row_action_array', function ($actions, $keyword) {
+        if (takuy_replacetext_is_replaceable($keyword)) {
+            $actions["stats"]["href"] = yourls_statlink(urlencode($keyword));
+        }
+        return $actions;
+    });
+};
+
+function takuy_replacetext_get_keywordinfo($return, $keyword, $field, $notfound) {
+    takuy_replacetext_override_sanitize($keyword);
+    return $return;
+}
+
+function takuy_replacetext_stats_keyword_taken($taken, $keyword) {
+    if ($GLOBALS["stats"]) {
+        $decoded = urldecode($keyword);
+        if (takuy_replacetext_is_replaceable($decoded)) {
+            takuy_replacetext_override_sanitize($decoded);
+
+            if (yourls_get_keyword_infos($decoded)) {
+                $taken = true;
+                $GLOBALS["keyword"] = $decoded;
+            }
+        }
+    }
+    return $taken;
+}
+
+/* TODO: might just replace this whole thing with one function, the stuff in the 2nd if statement */
+function takuy_replacetext_override_sanitize($keyword, $conditional = false) {
+    /* for cases where a specific keyword is passed, where the hook only affects one keyword */
+    if (takuy_replacetext_is_replaceable($keyword)) {
         yourls_add_filter('sanitize_string', function ($sanitized, $original) {
             return $original;
         });
+    }
+
+    /* for cases where applying in a hook that will apply to more than just one specific keyword */
+    if ($conditional) {
+        yourls_add_filter('sanitize_string', function ($sanitized, $original) {
+            if (takuy_replacetext_is_replaceable($original)) {
+                return $original;
+            }
+            return $sanitized;
+        });
+    }
+}
+
+/* function to detecting regex and script keywords*/
+function takuy_replacetext_is_replaceable($keyword) {
+    return (strpos($keyword, "regex/") === 0 || strpos($keyword, "\$") === 0);
+}
+
+/* handle admin-ajax.php calls */
+function takuy_replacetext_ajax_plugins_loaded($args) {
+    if (yourls_is_admin() && yourls_is_Ajax()) {
+        takuy_replacetext_override_sanitize('', true);
     }
 }
