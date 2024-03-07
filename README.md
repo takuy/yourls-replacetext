@@ -13,7 +13,7 @@ This plugin allows you to create dynamic or smart redirects - not 100% sure what
 
 ## How to use
 
-A short URL keyword prefixed with `regex/`, followed by a regex pattern will allow you to redirect based on regex pattern, but also do replacements within the Long URL based on the pattern match. You can use numerical tokens like `[[1]]`, `[[2]]`, etc to insert specific match groups from the regex pattern.
+A short URL keyword prefixed with `regex/`, followed by a regex pattern will allow you to redirect based on regex pattern, but also do replacements within the Long URL based on the pattern match. You can use numerical tokens like `[[1]]`, `[[2]]`, etc to insert specific match groups from the regex pattern. Prefix the number in the token with ! to force uppercase the replaced text, ie `[[!1]]`.
 
 A short URL keyword in the format `wordone/wordtwo` will allow you to replace the token `[[wordone]]` in the long URL whatever ``wordtwo`` is in your Navigation URL.  
 
