@@ -64,7 +64,10 @@ function takuy_replacetext_replace_params($url) {
 
 function takuy_replacetext_is_shorturl($isshort, $shorturl) {
     $data = takuy_replacetext_complex_text($shorturl);
-    return is_array($data);
+    if(is_array($data)) {
+        return true;
+    }
+    return $isshort;
 }
 
 function takuy_replacetext_simple_text($keyword) {
